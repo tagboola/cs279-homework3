@@ -1,4 +1,4 @@
-
+//initialize variables
 var text = "";
 var lineNumber = 1;
 
@@ -26,11 +26,21 @@ while (lineNumber < 4) {
     } else {
         mturk.rejectAssignment(hit.assignments[0])
         print("\nvote = reject\n")
-    }   
-}
+    }
 
-print("-------------------");
-print(text);
+    if(lineNumber == 4){
+        //Haiku successfully created
+	//Write completed haiku to output and to file
+	print("-------------------");
+	print("Completed Haiku:");
+	print("*******************");
+	print(text);
+	print("-------------------");
+	//Set variables back to original values
+	text = "";
+	lineNumber = 1;
+    }
+}
 
 
 function createLineHIT(oldText, syllableCount, improveCost) {
