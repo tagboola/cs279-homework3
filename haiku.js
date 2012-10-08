@@ -1,6 +1,7 @@
 //initialize variables
 var text = "";
 var lineNumber = 1;
+count = 1;
 
 while (lineNumber < 4) {
     var syllables = 5;
@@ -31,12 +32,12 @@ while (lineNumber < 4) {
     if(lineNumber == 4){
         //Haiku successfully created
 	//Write completed haiku to output and to file
-	print("-------------------");
-	print("Completed Haiku:");
-	print("*******************");
-	print(text);
-	print("-------------------");
+	var outputString = "-------------------\nCompleted Haiku:\n";
+	outputString += "*******************\n"+text+"-------------------\n";
+	print(outputString);
+	write("haiku" + count + ".txt", outputString);
 	//Set variables back to original values
+	count += 1;
 	text = "";
 	lineNumber = 1;
     }
