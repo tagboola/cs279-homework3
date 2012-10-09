@@ -1,8 +1,13 @@
 //initialize variables
 var text = "";
 var lineNumber = 1;
-count = 1;
-
+var count = 0;
+var categories = ["nature","pets","love"];
+var categoryImageHash = new Object();
+categoryImageHash["nature"] = "http://4.bp.blogspot.com/-7QvOlSOMb7o/UDF9a5Ed2_I/AAAAAAAAAEw/jXg6SofifjI/s1600/56793-nature-reserve-screensaver%255B1%255D.jpg";
+categoryImageHash["pets"] = "http://newpuppytrainingsecrets.com/wp-content/uploads/2010/06/1104607golden-retriever-puppy-and-kitten-posters.jpg";
+categoryImageHash["love"] = "http://dannaww.files.wordpress.com/2011/09/love.jpg";
+	
 while (lineNumber < 4) {
     var syllables = 5;
     if (lineNumber == 2) {
@@ -10,7 +15,7 @@ while (lineNumber < 4) {
     }
 	
     // add line of text
-    var hitId = createLineHIT(text, syllables, 0.02)
+    var hitId = createLineHIT(text, syllables, 0.02,categoryImageHash[categories[count%categories.length]]);
     var hit = mturk.waitForHIT(hitId)
     
     var newText = hit.assignments[0].answer.newText
@@ -32,7 +37,7 @@ while (lineNumber < 4) {
     if(lineNumber == 4){
         //Haiku successfully created
 	//Write completed haiku to output and to file
-	var outputString = "-------------------\nCompleted Haiku:\n";
+	var outputString = "-------------------\nCompleted Haiku\nCategory: "+categories[count % categories.length]+"\n";
 	outputString += "*******************\n"+text+"-------------------\n";
 	print(outputString);
 	write("haiku" + count + ".txt", outputString);
@@ -44,14 +49,22 @@ while (lineNumber < 4) {
 }
 
 
-function createLineHIT(oldText, syllableCount, improveCost) {
+function createLineHIT(oldText, syllableCount, improveCost, imgSrc) {
     default xml namespace = "http://mechanicalturk.amazonaws.com/AWSMechanicalTurkDataSchemas/2005-10-01/QuestionForm.xsd";
     var q = <QuestionForm>
         <Question>
             <QuestionIdentifier>newText</QuestionIdentifier>
             <IsRequired>true</IsRequired>
             <QuestionContent>
-		<Text>Please add a {syllableCount} syllable line to the haiku. (Other people will check for the correct syllable count.)</Text>
+		<Binary>
+  			<MimeType>
+    				<Type>image</Type>
+    				<SubType>gif</SubType>
+  			</MimeType>
+  			<DataURL></DataURL>
+			<AltText>The game board, with "X" to move.</AltText>
+		</Binary>
+		<Text>Please add a {syllableCount} syllable line for a haiku about the picture above. (Other people will check for the correct syllable count.)</Text>
                 <Text>Current poem:</Text>
 		<Text>{text}</Text>
             </QuestionContent>
@@ -66,7 +79,7 @@ function createLineHIT(oldText, syllableCount, improveCost) {
             </AnswerSpecification>
         </Question>
     </QuestionForm>
-    
+    q.Question.QuestionContent.Binary.DataURL = imgSrc;
     return mturk.createHIT({title : "Write Poetry", desc : "Add a " + syllableCount + " syllable line.", question : "" + q, reward : improveCost, assignmentDurationInSeconds : 5 * 60})
 }
 
